@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  # this is the dev container
+  # start this with
+  #   docker-compose run --name dev dev
+  dev:
+    hostname: dev
+    container_name: dev
+    build: ./go_ansible
+    volumes:
+      # here we create the persistent volume
+      # you can adapt the source path to whatever you like
+      - type: bind
+        source: ./data/dev
+        target: /home/dev
+    depends_on:
+      - docker_server
+
+  # here we add  another "server" that runs docker
+  # start this with
+  #   docker-compose run --name docker_server docker_server
+  # The --name option allows to reach it from the dev container by that name, e.g.
+  #   ping docker_server
+  docker_server:
+    hostname: docker_server
+    container_name: docker_server
+    image: docker:dind
+    privileged: true
+
+
